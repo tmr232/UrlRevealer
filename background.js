@@ -24,6 +24,43 @@ function getLocation(responseHeaders) {
     return "";
 }
 
+function addListener(url, sendResponse) {
+    function callback(info) {
+        // make sure this is a redirect
+        if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
+            return new Object();
+        }
+        
+        // Get the location from the headers
+        var redirectLocation = getLocation(info.responseHeaders);
+        
+        // Send back the new url
+        sendResponse({redirectUrl:redirectLocation});
+        
+        // Remove the listener
+        chrome.webRequest.onHeadersReceived.removeListener(callback);
+        
+        return {cancel:true};
+    }
+    chrome.webRequest.onHeadersReceived.addListener(
+      callback,
+      {urls: [url]},
+      ["blocking", "responseHeaders"]
+      );
+}
+
+function messageHandler(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request.type === "urlquery") {
+        addListener(request.url, sendResponse);
+        return true;
+    }
+}
+
+chrome.extension.onMessage.addListener(messageHandler);
+
 chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log(sender.tab ?
@@ -51,8 +88,3 @@ chrome.webRequest.onHeadersReceived.addListener(
       {urls: ["*://tinyurl.com/*"]},
       ["blocking", "responseHeaders"]
       );
-      
-
-var request = new XMLHttpRequest();
-request.open("GET", "http://tinyurl.com/bptcl74", true);
-request.send(null);
