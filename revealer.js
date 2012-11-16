@@ -2,8 +2,12 @@
  * Content script. Used for finding the interesting links!
  */
 
-function processURL(url) {
-    // assumes post-filtering
+function processURL(url, handler) {
+    console.log(handler);
+    function handleResponse(response) {
+        console.log(response);
+        handler(response.redirectUrl);
+    }
     
     // Send the url to the background script
     chrome.extension.sendMessage({type:"urlquery", url: url}, handleResponse);
@@ -14,8 +18,29 @@ function processURL(url) {
     xhr.send(null);
 }
 
-function handleResponse(response) {
-    console.log(response.redirectUrl);
+/*
+ *  Go over all anchors in page, and replace tinyurls with real ones!
+ */
+var tinyurlRE = /.*:\/\/tinyurl\.com\/.*/;
+
+function processPage() {
+    var anchors = document.querySelectorAll("a");
+    for (var i = anchors.length - 1; i >= 0; --i) {
+        var anchor = anchors[i];
+        if (anchor.href.match(tinyurlRE) === null) {
+            continue;
+        }
+        var callbackMaker = function(anchor) {
+            return function(url){
+                anchor.href=url;
+                console.log("handler");
+                console.log(url);
+            };
+        };
+        processURL(anchor.href, callbackMaker(anchor));
+    }
 }
 
-processURL("http://tinyurl.com/c65vxz5")
+
+// Replace all links in page!!!
+processPage();

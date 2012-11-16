@@ -28,7 +28,8 @@ function addListener(url, sendResponse) {
     function callback(info) {
         // make sure this is a redirect
         if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
-            return new Object();
+            //return new Object();
+            return {cancel:true};
         }
         
         // Get the location from the headers
