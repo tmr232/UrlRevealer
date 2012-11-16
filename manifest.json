@@ -10,7 +10,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://tinyurl.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["revealer.js"]
     }
   ],
