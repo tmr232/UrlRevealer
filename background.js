@@ -60,31 +60,3 @@ function messageHandler(request, sender, sendResponse) {
 }
 
 chrome.extension.onMessage.addListener(messageHandler);
-
-chrome.extension.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    if (request.greeting == "hello")
-      sendResponse({farewell: "It's alive!"});
-  });
-
-function headerHandler(details) {
-    // make sure this is a redirect
-    if (details.statusLine.indexOf("HTTP/1.1 30") !== 0) {
-        return new Object();
-    }
-    
-    // Get the location from the headers
-    var redirectLocation = getLocation(details.responseHeaders);
-    console.log(redirectLocation);
-    console.log(details);
-    alert("test");
-}
-
-chrome.webRequest.onHeadersReceived.addListener(
-      headerHandler,
-      {urls: ["*://tinyurl.com/*"]},
-      ["blocking", "responseHeaders"]
-      );

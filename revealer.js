@@ -2,11 +2,6 @@
  * Content script. Used for finding the interesting links!
  */
 
-
-chrome.extension.sendMessage({greeting: "hello"}, function(response) {
-  console.log(response.farewell);
-});
-
 function processURL(url) {
     // assumes post-filtering
     
