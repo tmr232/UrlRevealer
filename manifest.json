@@ -1,0 +1,19 @@
+{
+  "name": "UrlRevealer",
+  "version": "1.0",
+  "description": "No more tiny URLs!",
+  "permissions": ["webRequest", "webRequestBlocking",
+                  "*://tinyurl.com/*", "*://okmhibebepeffggkjfknogeammemjoif/*"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://tinyurl.com/*"],
+      "js": ["revealer.js"]
+    }
+  ],
+
+  "manifest_version": 2
+}
