@@ -24,7 +24,7 @@ function getLocation(responseHeaders) {
     return "";
 }
 
-function addListener(url, tabId, extraData) {
+function addListener(url, tabId, extraData, sendResponse) {
     function callback(info) {
         // make sure this is a redirect
         if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
@@ -52,6 +52,9 @@ function addListener(url, tabId, extraData) {
       {urls: [url]},
       ["blocking", "responseHeaders"]
       );
+          
+    sendResponse({url:url});
+    
 }
 
 function messageHandler(request, sender, sendResponse) {
@@ -62,7 +65,7 @@ function messageHandler(request, sender, sendResponse) {
     if (request.type === "urlquery") {
         console.log("indeed?");
         console.log(request);
-        addListener(request.url, sender.tab.id, request.extra);
+        addListener(request.url, sender.tab.id, request.extra, sendResponse);
         return true;
     }
 }

@@ -11,10 +11,15 @@ function processURL(url, extraData) {
     
     // Send the url to the background script
     var data = {type:"urlquery", url: url, extra: extraData};
-    console.log("data")
+    console.log("data");
     console.log(data);
-    chrome.extension.sendMessage(data);
+    chrome.extension.sendMessage(data, function(response) {fakeGetUrl(response.url);});
     
+    
+    
+}
+
+function fakeGetUrl(url) {
     // Fake-open the url for the background script to do it's magic
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
