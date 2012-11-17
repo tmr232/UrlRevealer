@@ -2,6 +2,17 @@
  * Content script. Used for finding the interesting links!
  */
 
+
+/*
+ * TODO: Refactor:
+ *  1. Create an easy-to-use API for revealer.js
+ *      processUrl(url, function(trueUrl) { doCoolStuff(); });
+ *  2. Move regex to a seperate file
+ *  3. Recode all required parts in both modules...
+ *  4. Add a 'how to add your shortener' manual to docs.
+ */
+
+
 function processURL(url, extraData) {
     //console.log(handler);
     function handleResponse(response) {
