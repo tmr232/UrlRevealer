@@ -2,15 +2,18 @@
  * Content script. Used for finding the interesting links!
  */
 
-function processURL(url, handler) {
-    console.log(handler);
+function processURL(url, extraData) {
+    //console.log(handler);
     function handleResponse(response) {
         console.log(response);
         handler(response.redirectUrl);
     }
     
     // Send the url to the background script
-    chrome.extension.sendMessage({type:"urlquery", url: url}, handleResponse);
+    var data = {type:"urlquery", url: url, extra: extraData};
+    console.log("data")
+    console.log(data);
+    chrome.extension.sendMessage(data);
     
     // Fake-open the url for the background script to do it's magic
     var xhr = new XMLHttpRequest();
@@ -39,9 +42,16 @@ function processPage() {
                 console.log(url);
             };
         };
-        processURL(anchor.href, callbackMaker(anchor));
+        processURL(anchor.href, i);
     }
 }
+
+chrome.extension.onMessage.addListener(
+  function(request, sender, sendResponse) {
+      console.log("message again!");
+      console.log(request);
+    document.querySelectorAll("a")[request.extra].href=request.redirectUrl;
+  });
 
 console.log("Revealer loaded!");
 // Replace all links in page!!!

@@ -24,7 +24,7 @@ function getLocation(responseHeaders) {
     return "";
 }
 
-function addListener(url, sendResponse) {
+function addListener(url, tabId, extraData) {
     function callback(info) {
         // make sure this is a redirect
         if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
@@ -34,10 +34,13 @@ function addListener(url, sendResponse) {
         
         // Get the location from the headers
         var redirectLocation = getLocation(info.responseHeaders);
-        console.log(info.responseHeaders);
+        console.log("response");
+        console.log(info);
         console.log(redirectLocation);
         // Send back the new url
-        sendResponse({redirectUrl:redirectLocation});
+        //sendResponse({redirectUrl:redirectLocation});
+        console.log({redirectUrl:redirectLocation, extra: extraData});
+        chrome.tabs.sendMessage(tabId, {redirectUrl:redirectLocation, extra: extraData});
         
         // Remove the listener
         chrome.webRequest.onHeadersReceived.removeListener(callback);
@@ -57,7 +60,9 @@ function messageHandler(request, sender, sendResponse) {
                 "from the extension");
     console.log(request);
     if (request.type === "urlquery") {
-        addListener(request.url, sendResponse);
+        console.log("indeed?");
+        console.log(request);
+        addListener(request.url, sender.tab.id, request.extra);
         return true;
     }
 }
