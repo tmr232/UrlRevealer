@@ -34,7 +34,8 @@ function addListener(url, sendResponse) {
         
         // Get the location from the headers
         var redirectLocation = getLocation(info.responseHeaders);
-        
+        console.log(info.responseHeaders);
+        console.log(redirectLocation);
         // Send back the new url
         sendResponse({redirectUrl:redirectLocation});
         
@@ -54,6 +55,7 @@ function messageHandler(request, sender, sendResponse) {
     console.log(sender.tab ?
                 "from a content script:" + sender.tab.url :
                 "from the extension");
+    console.log(request);
     if (request.type === "urlquery") {
         addListener(request.url, sendResponse);
         return true;

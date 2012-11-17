@@ -22,14 +22,16 @@ function processURL(url, handler) {
  *  Go over all anchors in page, and replace tinyurls with real ones!
  */
 var tinyurlRE = /.*:\/\/tinyurl\.com\/.*/;
-
+var bitlyRE = /.*:\/\/bit\.ly\/.*/;
 function processPage() {
     var anchors = document.querySelectorAll("a");
     for (var i = anchors.length - 1; i >= 0; --i) {
         var anchor = anchors[i];
-        if (anchor.href.match(tinyurlRE) === null) {
+        if ((anchor.href.match(tinyurlRE) === null) && 
+            (anchor.href.match(bitlyRE) === null)) {
             continue;
         }
+        console.log("yep");
         var callbackMaker = function(anchor) {
             return function(url){
                 anchor.href=url;
@@ -41,6 +43,8 @@ function processPage() {
     }
 }
 
-
+console.log("Revealer loaded!");
 // Replace all links in page!!!
 processPage();
+window.processPage = processPage;
+window.processURL = processURL;

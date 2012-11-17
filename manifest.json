@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "No more tiny URLs!",
   "permissions": ["webRequest", "webRequestBlocking",
-                  "*://tinyurl.com/*"],
+                  "*://tinyurl.com/*", "*://bit.ly/*"],
   "background": {
     "scripts": ["background.js"]
   },
