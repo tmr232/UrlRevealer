@@ -54,19 +54,7 @@ function processPage() {
     var anchors = document.querySelectorAll("a");
     for (var i = anchors.length - 1; i >= 0; --i) {
         var anchor = anchors[i];
-        if ((anchor.href.match(tinyurlRE) === null) && 
-            (anchor.href.match(bitlyRE) === null)) {
-            continue;
-        }
-        
-        var callbackMaker = function(anchor) {
-            return function(url){
-                anchor.href=url;
-                console.log("handler");
-                console.log(url);
-            };
-        };
-        processURL(anchor.href, i);
+        anchorHandler(anchor);
     }
 }
 
@@ -135,3 +123,6 @@ var observer = new MutationSummary({
     callback: handleAnchorChanges,
     queries: [{element: "a", elementAttributes: "href"}]
 });
+
+
+processPage();
