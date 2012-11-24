@@ -48,8 +48,6 @@ function fakeGetUrl(url) {
 /*
  *  Go over all anchors in page, and replace tinyurls with real ones!
  */
-var tinyurlRE = /.*:\/\/tinyurl\.com\/.*/;
-var bitlyRE = /.*:\/\/bit\.ly\/.*/;
 function processPage() {
     var anchors = document.querySelectorAll("a");
     for (var i = anchors.length - 1; i >= 0; --i) {
@@ -70,10 +68,7 @@ console.log("Revealer loaded!");
 //processURL("http://bit.ly/Wg77nW", function(request) { console.log("A"); console.log(request);});
 //processURL("http://tinyurl.com/cgdj65m", function(request) { console.log("B"); console.log(request);});
 
-var urlREs = [
-    /.*:\/\/bit\.ly\/.*/, //biy.ly
-    /.*:\/\/tinyurl\.com\/.*/ //tinyurl.com
-];
+
 
 function checkUrl(url) {
     for (var i = urlREs.length - 1; i >= 0; --i) {

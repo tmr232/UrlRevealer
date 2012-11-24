@@ -1,6 +1,9 @@
 URLRevealer
 ===========
 
-Current status:
-* Automagically replace tinyurl.com links with full URLs.
-* Only called when the page loads. Any updates are ignored.
+Lets you see original URLs instead of shorthened ones!
+
+Can reveal:
+* tinyurl.com
+* bit.ly
+* goo.gl

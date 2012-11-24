@@ -8,7 +8,7 @@
           "128": "icon128.png" },
   
   "permissions": ["webRequest", "webRequestBlocking",
-                  "*://tinyurl.com/*", "*://bit.ly/*"],
+                  "*://tinyurl.com/*", "*://bit.ly/*", "*://goo.gl/*"],
   "background": {
     "scripts": ["background.js"]
   },
@@ -16,7 +16,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["mutation_summary.js", "revealer.js"]
+      "js": ["url_regex.js", "mutation_summary.js", "revealer.js"]
     }
   ],
 
