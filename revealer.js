@@ -79,5 +79,40 @@ chrome.extension.onMessage.addListener(
 
 console.log("Revealer loaded!");
 // Replace all links in page!!!
-processURL("http://bit.ly/Wg77nW", function(request) { console.log("A"); console.log(request);});
-processURL("http://tinyurl.com/cgdj65m", function(request) { console.log("B"); console.log(request);});
+//processURL("http://bit.ly/Wg77nW", function(request) { console.log("A"); console.log(request);});
+//processURL("http://tinyurl.com/cgdj65m", function(request) { console.log("B"); console.log(request);});
+
+var urlREs = [
+    /.*:\/\/bit\.ly\/.*/, //biy.ly
+    /.*:\/\/tinyurl\.com\/.*/ //tinyurl.com
+]
+
+function anchorHandler(anchor) {
+    /*
+     * Flow:
+     *  1. Check the URL vs. URL REs
+     *  2. Process the URL (processURL(...)
+     *  3. Replace the anchor's href
+     */
+}
+
+function handleAnchorChanges(summaries) {
+    var anchorSummaries = summaries[0];
+    console.log(anchorSummaries);
+    //TODO: make sure you handle all interesting events!!!
+    anchorSummaries.attributeChanged.href.forEach(
+            function(changedEl) {
+        console.log(changedEl);
+        changedEl.href = "Booyah!";
+    });
+    anchorSummaries.added.forEach(
+            function(changedEl) {
+        console.log(changedEl);
+        changedEl.href = "Booyah!";
+    });
+};
+
+var observer = new MutationSummary({
+    callback: handleAnchorChanges,
+    queries: [{element: "a", elementAttributes: "href"}]
+});
