@@ -16,7 +16,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["url_regex.js", "mutation_summary.js", "revealer.js"]
+      "js": ["url_regex.js", "mutation_summary.js", "revealer.js"],
+      "all_frames":true
     }
   ],
 

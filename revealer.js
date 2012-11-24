@@ -28,8 +28,8 @@ function processURL(url, callback) {
     }
     
     // Send the url to the background script
-    var callbackUID = makeNewUID();
-    callbackQueue[callbackUID] = callback;
+//    var callbackUID = makeNewUID();
+    callbackQueue[++currentCallbackUID] = callback;
 //    console.log(callbackQueue);
     var data = {type:"urlquery", url: url, callbackUID: callbackUID};
     chrome.extension.sendMessage(data, function(response) {fakeGetUrl(response.url);});
@@ -59,7 +59,10 @@ function processPage() {
 chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
       //TODO: perhaps use .call and pass the request as 'this' ?
-      callbackQueue[request.callbackUID](request);
+      console.log(callbackQueue);
+      var callback = callbackQueue[request.callbackUID];
+      console.log(callback);
+      callback(request);
       delete callbackQueue[request.callbackUID];
   });
 
