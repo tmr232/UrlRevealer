@@ -14,6 +14,10 @@
  * for a url to test!
  */
 
+//TODO: instead of adding and removing listeners, build a more robust one.
+// Also, filter based on xmlhttprequest as well (other requests are not from the
+// content script)
+
 function getLocation(responseHeaders) {
     for (var i = responseHeaders.length - 1; i >= 0; --i) {
         if (responseHeaders[i].name === "Location") {
@@ -24,16 +28,18 @@ function getLocation(responseHeaders) {
     return "";
 }
 
+var redirectRE = /HTTP\/1\.1 30[12378]/;
 function addListener(url, tabId, callbackUID, sendResponse) {
     function callback(info) {
-        // make sure this is a redirect
-        if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
-            //return new Object();
-            return {cancel:true};
-        }
         
         // Get the location from the headers
         var redirectLocation = getLocation(info.responseHeaders);
+        
+        // If no new location - no redirect. Continue as normal.
+        if (redirectLocation === "") {
+            chrome.webRequest.onHeadersReceived.removeListener(callback);
+            return;
+        }
         console.log("response");
         console.log(info);
         console.log(redirectLocation);
