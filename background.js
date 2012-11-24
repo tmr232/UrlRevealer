@@ -40,12 +40,12 @@ function addListener(url, tabId, callbackUID, sendResponse) {
             chrome.webRequest.onHeadersReceived.removeListener(callback);
             return;
         }
-        console.log("response");
-        console.log(info);
-        console.log(redirectLocation);
+//        console.log("response");
+//        console.log(info);
+//        console.log(redirectLocation);
         // Send back the new url
         //sendResponse({redirectUrl:redirectLocation});
-        console.log({redirectUrl:redirectLocation, callbackUID: callbackUID});
+//        console.log({redirectUrl:redirectLocation, callbackUID: callbackUID});
         chrome.tabs.sendMessage(tabId, {redirectUrl:redirectLocation, callbackUID: callbackUID});
         
         // Remove the listener
@@ -64,13 +64,13 @@ function addListener(url, tabId, callbackUID, sendResponse) {
 }
 
 function messageHandler(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    console.log(request);
+//    console.log(sender.tab ?
+//                "from a content script:" + sender.tab.url :
+//                "from the extension");
+//    console.log(request);
     if (request.type === "urlquery") {
-        console.log("indeed?");
-        console.log(request);
+//        console.log("indeed?");
+//        console.log(request);
         addListener(request.url, sender.tab.id, request.callbackUID, sendResponse);
         return true;
     }

@@ -30,7 +30,7 @@ function processURL(url, callback) {
     // Send the url to the background script
     var callbackUID = makeNewUID();
     callbackQueue[callbackUID] = callback;
-    console.log(callbackQueue);
+//    console.log(callbackQueue);
     var data = {type:"urlquery", url: url, callbackUID: callbackUID};
     chrome.extension.sendMessage(data, function(response) {fakeGetUrl(response.url);});
     
@@ -63,7 +63,7 @@ chrome.extension.onMessage.addListener(
       delete callbackQueue[request.callbackUID];
   });
 
-console.log("Revealer loaded!");
+//console.log("Revealer loaded!");
 // Replace all links in page!!!
 //processURL("http://bit.ly/Wg77nW", function(request) { console.log("A"); console.log(request);});
 //processURL("http://tinyurl.com/cgdj65m", function(request) { console.log("B"); console.log(request);});
