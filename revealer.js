@@ -85,7 +85,17 @@ console.log("Revealer loaded!");
 var urlREs = [
     /.*:\/\/bit\.ly\/.*/, //biy.ly
     /.*:\/\/tinyurl\.com\/.*/ //tinyurl.com
-]
+];
+
+function checkUrl(url) {
+    for (var i = urlREs.length - 1; i >= 0; --i) {
+        if (url.match(urlREs[i]) !== null) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 function anchorHandler(anchor) {
     /*
@@ -94,22 +104,31 @@ function anchorHandler(anchor) {
      *  2. Process the URL (processURL(...)
      *  3. Replace the anchor's href
      */
+    
+    // 1. Check the url
+    if (!checkUrl(anchor.href)) {
+        return;
+    }
+    
+    function processUrlCallback(request) {
+        // 3. Replace the anchor's href
+        anchor.href = request.redirectUrl;
+    }
+    
+    // 2. Process the URL
+    processURL(anchor.href, function(request){processUrlCallback(request);});
 }
 
 function handleAnchorChanges(summaries) {
     var anchorSummaries = summaries[0];
-    console.log(anchorSummaries);
-    //TODO: make sure you handle all interesting events!!!
-    anchorSummaries.attributeChanged.href.forEach(
-            function(changedEl) {
-        console.log(changedEl);
-        changedEl.href = "Booyah!";
-    });
-    anchorSummaries.added.forEach(
-            function(changedEl) {
-        console.log(changedEl);
-        changedEl.href = "Booyah!";
-    });
+//    console.log(anchorSummaries);
+    //TODO: make sure you handle all interesting events!!!    
+            
+    // 1. Go over changed hrefs
+    anchorSummaries.attributeChanged.href.forEach(anchorHandler);
+    
+    // 2. Go over added anchors
+    anchorSummaries.added.forEach(anchorHandler);
 };
 
 var observer = new MutationSummary({
