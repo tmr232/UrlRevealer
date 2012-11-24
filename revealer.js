@@ -10,20 +10,28 @@
  *  2. Move regex to a seperate file
  *  3. Recode all required parts in both modules...
  *  4. Add a 'how to add your shortener' manual to docs.
+ *  
+ *  http://updates.html5rocks.com/2012/02/Detect-DOM-changes-with-Mutation-Observers
  */
 
+var callbackQueue = [];
+var currentCallbackUID = 0;
 
-function processURL(url, extraData) {
-    //console.log(handler);
+//TODO: make sure we don't get a sync error here!!!
+function makeNewUID() {
+    return currentCallbackUID++;
+}
+
+function processURL(url, callback) {
     function handleResponse(response) {
-        console.log(response);
         handler(response.redirectUrl);
     }
     
     // Send the url to the background script
-    var data = {type:"urlquery", url: url, extra: extraData};
-    console.log("data");
-    console.log(data);
+    var callbackUID = makeNewUID();
+    callbackQueue[callbackUID] = callback;
+    console.log(callbackQueue);
+    var data = {type:"urlquery", url: url, callbackUID: callbackUID};
     chrome.extension.sendMessage(data, function(response) {fakeGetUrl(response.url);});
     
     
@@ -50,7 +58,7 @@ function processPage() {
             (anchor.href.match(bitlyRE) === null)) {
             continue;
         }
-        console.log("yep");
+        
         var callbackMaker = function(anchor) {
             return function(url){
                 anchor.href=url;
@@ -64,13 +72,12 @@ function processPage() {
 
 chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
-      console.log("message again!");
-      console.log(request);
-    document.querySelectorAll("a")[request.extra].href=request.redirectUrl;
+      //TODO: perhaps use .call and pass the request as 'this' ?
+      callbackQueue[request.callbackUID](request);
+      delete callbackQueue[request.callbackUID];
   });
 
 console.log("Revealer loaded!");
 // Replace all links in page!!!
-processPage();
-window.processPage = processPage;
-window.processURL = processURL;
+processURL("http://bit.ly/Wg77nW", function(request) { console.log("A"); console.log(request);});
+processURL("http://tinyurl.com/cgdj65m", function(request) { console.log("B"); console.log(request);});

@@ -24,7 +24,7 @@ function getLocation(responseHeaders) {
     return "";
 }
 
-function addListener(url, tabId, extraData, sendResponse) {
+function addListener(url, tabId, callbackUID, sendResponse) {
     function callback(info) {
         // make sure this is a redirect
         if (info.statusLine.indexOf("HTTP/1.1 30") !== 0) {
@@ -39,8 +39,8 @@ function addListener(url, tabId, extraData, sendResponse) {
         console.log(redirectLocation);
         // Send back the new url
         //sendResponse({redirectUrl:redirectLocation});
-        console.log({redirectUrl:redirectLocation, extra: extraData});
-        chrome.tabs.sendMessage(tabId, {redirectUrl:redirectLocation, extra: extraData});
+        console.log({redirectUrl:redirectLocation, callbackUID: callbackUID});
+        chrome.tabs.sendMessage(tabId, {redirectUrl:redirectLocation, callbackUID: callbackUID});
         
         // Remove the listener
         chrome.webRequest.onHeadersReceived.removeListener(callback);
@@ -65,7 +65,7 @@ function messageHandler(request, sender, sendResponse) {
     if (request.type === "urlquery") {
         console.log("indeed?");
         console.log(request);
-        addListener(request.url, sender.tab.id, request.extra, sendResponse);
+        addListener(request.url, sender.tab.id, request.callbackUID, sendResponse);
         return true;
     }
 }
